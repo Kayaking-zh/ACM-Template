@@ -1,5 +1,1 @@
-# 图论
-
-## 强连通分量
-
-### 123
+ACM-Template By Canoeing
