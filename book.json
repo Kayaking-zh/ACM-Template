@@ -1,0 +1,9 @@
+{
+    "title" : "ACM-Template",
+    "plugins" : [
+        "katex",
+        "include-codeblock",
+        "ace",
+        "emphasize"
+    ]
+}
