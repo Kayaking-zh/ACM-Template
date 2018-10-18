@@ -1,0 +1,136 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>上下界网络流</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    
+        
+        <link rel="stylesheet" href="../gitbook/ebook.css">
+        
+    
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-katex/katex.min.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-ace/pdf.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/ebook.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+
+        
+    </head>
+    <body>
+        
+<div class="page">
+    
+        <h1 class="book-chapter book-chapter-3">上下界网络流</h1>
+        <div class="section">
+            <h2 id="&#x6709;&#x4E0A;&#x4E0B;&#x754C;&#x7F51;&#x7EDC;&#x6D41;">&#x6709;&#x4E0A;&#x4E0B;&#x754C;&#x7F51;&#x7EDC;&#x6D41;</h2>
+<h3 id="&#x65E0;&#x6E90;&#x6C47;&#x6709;&#x4E0A;&#x4E0B;&#x754C;&#x53EF;&#x884C;&#x6D41;">&#x65E0;&#x6E90;&#x6C47;&#x6709;&#x4E0A;&#x4E0B;&#x754C;&#x53EF;&#x884C;&#x6D41;</h3>
+<p>&#x5982;&#x679C;&#x5B58;&#x5728;&#x53EF;&#x884C;&#x6D41;&#xFF0C;&#x90A3;&#x4E48;&#x6BCF;&#x6761;&#x8FB9;&#x7684;&#x6D41;&#x91CF;&#x90FD;&#x5927;&#x4E8E;&#x7B49;&#x4E8E;&#x6D41;&#x91CF;&#x7684;&#x4E0B;&#x754C;&#xFF0C;&#x56E0;&#x6B64;&#x53EF;&#x4EE5;&#x4EE4;&#x6BCF;&#x6761;&#x8FB9;&#x7684;&#x521D;&#x59CB;&#x6D41;&#x91CF;&#x4E3A;&#x6D41;&#x91CF;&#x7684;&#x4E0B;&#x754C;&#xFF0C;&#x5728;&#x6B64;&#x57FA;&#x7840;&#x4E0A;&#x5EFA;&#x7ACB;&#x6B8B;&#x91CF;&#x7F51;&#x7EDC;&#x3002;&#x521D;&#x59CB;&#x6D41;&#x4E0D;&#x4E00;&#x5B9A;&#x6EE1;&#x8DB3;&#x6D41;&#x91CF;&#x5B88;&#x6052;&#xFF0C;&#x8003;&#x8651;&#x5728;&#x6B8B;&#x91CF;&#x7F51;&#x7EDC;&#x4E0A;&#x6C42;&#x51FA;&#x53E6;&#x4E00;&#x4E2A;&#x4E0D;&#x5B88;&#x6052;&#x7684;&#x9644;&#x52A0;&#x6D41;&#x3002;</p>
+<ol>
+<li>&#x5BF9;&#x4E8E;&#x539F;&#x56FE;&#x4E2D;&#x6BCF;&#x6761;$(u, v, l, r)$&#x7684;&#x8FB9;&#xFF0C;&#x5728;&#x65B0;&#x56FE;&#x4E2D;&#x5EFA;&#x7ACB;$(u, v, r-l)$&#x7684;&#x8FB9;</li>
+<li>$ du[i] $&#x8868;&#x793A;&#x521D;&#x59CB;&#x6D41;&#x4E2D;&#x8282;&#x70B9;$i$&#x7684;&#x6D41;&#x5165;&#x6D41;&#x91CF;&#x4E0E;&#x6D41;&#x51FA;&#x6D41;&#x91CF;&#x4E4B;&#x5DEE;</li>
+<li>&#x5BF9;&#x4E8E;&#x65B0;&#x56FE;&#xFF0C;&#x5EFA;&#x7ACB;&#x8D85;&#x7EA7;&#x6E90;&#x70B9;$source$&#x4E0E;&#x6C47;&#x70B9;$sink$</li>
+<li>&#x5BF9;&#x4E8E;&#x6EE1;&#x8DB3;$du[i] &gt; 0$&#x7684;&#x8282;&#x70B9;$i$&#xFF0C;&#x5728;&#x65B0;&#x56FE;&#x4E2D;&#x5EFA;&#x7ACB;$(source, i, du[i])$&#x7684;&#x8FB9;</li>
+<li>&#x5BF9;&#x4E8E;&#x6EE1;&#x8DB3;$du[i] &lt; 0$&#x7684;&#x8282;&#x70B9;$i$&#xFF0C;&#x5728;&#x4FE1;&#x5F92;&#x4E2D;&#x5EFA;&#x7ACB;$(i, sink, -du[i])$&#x7684;&#x8FB9;</li>
+</ol>
+<p>&#x82E5;&#x65B0;&#x56FE;&#x53EF;&#x4EE5;&#x6EE1;&#x6D41;&#xFF0C;&#x5219;&#x5B58;&#x5728;&#x4E00;&#x4E2A;&#x53EF;&#x884C;&#x6D41;&#xFF0C;&#x5426;&#x5219;&#x4E0D;&#x5B58;&#x5728;&#x3002;</p>
+<pre><code class="lang-c++"><span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">lowbound_flow</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n, <span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt;U, <span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt;V, <span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt;L, <span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt;R)</span> </span>{
+    dinic::init();
+    <span class="hljs-built_in">memset</span>(du, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(du));
+    <span class="hljs-keyword">int</span> ln = U.size();
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; ln; i++) {
+        <span class="hljs-keyword">if</span>(R[i] &lt; L[i]) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+        dinic::addEdge(U[i], V[i], R[i]-L[i], i+<span class="hljs-number">1</span>);
+        dinic::addEdge(V[i], U[i], <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
+        du[U[i]] -= L[i], du[V[i]] += L[i];
+    }
+    dinic::src = n+<span class="hljs-number">1</span>, dinic::sink = n+<span class="hljs-number">2</span>;
+    <span class="hljs-keyword">int</span> sum = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt;= n; i++) {
+        <span class="hljs-keyword">if</span>(du[i] &gt; <span class="hljs-number">0</span>) {
+            dinic::addEdge(dinic::src, i, du[i], <span class="hljs-number">0</span>);
+            dinic::addEdge(i, dinic::src, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
+            sum += du[i];
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(du[i] &lt; <span class="hljs-number">0</span>) {
+            dinic::addEdge(i, dinic::sink, -du[i], <span class="hljs-number">0</span>);
+            dinic::addEdge(dinic::sink, i, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
+        }
+    }
+    <span class="hljs-keyword">return</span> dinic::maxFlow() == sum;
+}
+</code></pre>
+<h3 id="&#x6709;&#x6E90;&#x6C47;&#x6709;&#x4E0A;&#x4E0B;&#x754C;&#x53EF;&#x884C;&#x6D41;">&#x6709;&#x6E90;&#x6C47;&#x6709;&#x4E0A;&#x4E0B;&#x754C;&#x53EF;&#x884C;&#x6D41;</h3>
+<p>&#x8FDE;&#x63A5;&#x4E00;&#x6761;$(sink, src, inf)$&#x7684;&#x8FB9;&#xFF0C;&#x95EE;&#x9898;&#x8F6C;&#x5316;&#x4E3A;&#x65E0;&#x6E90;&#x6C47;&#x6709;&#x4E0A;&#x4E0B;&#x754C;&#x53EF;&#x884C;&#x6D41;</p>
+<h3 id="&#x6709;&#x6E90;&#x6C47;&#x6709;&#x4E0A;&#x4E0B;&#x754C;&#x6700;&#x5927;&#x6D41;">&#x6709;&#x6E90;&#x6C47;&#x6709;&#x4E0A;&#x4E0B;&#x754C;&#x6700;&#x5927;&#x6D41;</h3>
+<p>&#x5148;&#x6C42;&#x4E00;&#x4E2A;&#x6709;&#x6E90;&#x6C47;&#x6709;&#x4E0A;&#x4E0B;&#x754C;&#x53EF;&#x884C;&#x6D41;&#xFF0C;&#x7136;&#x540E;&#x518D;&#x5728;&#x539F;&#x6765;&#x7684;&#x6B8B;&#x91CF;&#x7F51;&#x7EDC;&#x4E0A;&#x9762;&#x8FDB;&#x884C;&#x589E;&#x5E7F;&#xFF0C;&#x6700;&#x540E;&#x7684;&#x6700;&#x5927;&#x6D41;&#x5373;&#x4E3A;&#x53EF;&#x884C;&#x6D41;&#xFF08;&#x539F;&#x56FE;&#x4E2D;$sink$&#x5230;$src$&#x7684;&#x6D41;&#x91CF;&#xFF09;$+$ &#x6B8B;&#x91CF;&#x7F51;&#x7EDC;&#x6700;&#x5927;&#x6D41;</p>
+<pre><code class="lang-c++"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">lowboundMaxflow</span><span class="hljs-params">(<span class="hljs-keyword">int</span> s, <span class="hljs-keyword">int</span> t, <span class="hljs-keyword">int</span> n, <span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt;U, <span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt;V, <span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt;L, <span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt;R)</span> </span>{
+    <span class="hljs-built_in">memset</span>(du, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(du)); dinic::init();
+    <span class="hljs-keyword">int</span> m = U.size();
+    dinic::src = n+<span class="hljs-number">1</span>, dinic::sink = n+<span class="hljs-number">2</span>;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; m; i++) {
+        <span class="hljs-keyword">if</span>(L[i] &gt; R[i]) <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+        dinic::addEdge(U[i], V[i], R[i]-L[i]);
+        dinic::addEdge(V[i], U[i], <span class="hljs-number">0</span>);
+        du[U[i]] -= L[i], du[V[i]] += L[i];
+    }
+    <span class="hljs-keyword">int</span> sum = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt;= n; i++) {
+        <span class="hljs-keyword">if</span>(du[i] &gt; <span class="hljs-number">0</span>) {
+            dinic::addEdge(dinic::src, i, du[i]);
+            dinic::addEdge(i, dinic::src, <span class="hljs-number">0</span>);
+            sum += du[i];
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(du[i] &lt; <span class="hljs-number">0</span>) {
+            dinic::addEdge(i, dinic::sink, -du[i]);
+            dinic::addEdge(dinic::sink, i, <span class="hljs-number">0</span>);
+        }
+    }
+    dinic::addEdge(t, s, INF), dinic::addEdge(s, t, <span class="hljs-number">0</span>);
+    <span class="hljs-keyword">if</span>(dinic::maxFlow() &lt; sum) <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">int</span> flow = dinic::cap[dinic::tot];
+        dinic::cap[dinic::tot] = dinic::cap[dinic::tot<span class="hljs-number">-1</span>] = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = dinic::head[dinic::src]; i; i = dinic::nxt[i])
+            dinic::cap[i] = dinic::cap[i^<span class="hljs-number">1</span>] = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = dinic::head[dinic::sink]; i; i = dinic::nxt[i])
+            dinic::cap[i] = dinic::cap[i^<span class="hljs-number">1</span>] = <span class="hljs-number">0</span>;
+        dinic::src = s, dinic::sink = t;
+        <span class="hljs-keyword">return</span> flow + dinic::maxFlow();
+    }
+}
+</code></pre>
+<h3 id="&#x6709;&#x6E90;&#x6C47;&#x6709;&#x4E0A;&#x4E0B;&#x754C;&#x6700;&#x5C0F;&#x6D41;">&#x6709;&#x6E90;&#x6C47;&#x6709;&#x4E0A;&#x4E0B;&#x754C;&#x6700;&#x5C0F;&#x6D41;</h3>
+<p>&#x6C42;&#x5B8C;&#x53EF;&#x884C;&#x6D41;&#x4E4B;&#x540E;&#x5728;&#x6B8B;&#x91CF;&#x7F51;&#x7EDC;&#x4E0A;&#x8FDB;&#x884C;&#x4ECE;$t$&#x5230;$s$&#x7684;&#x6700;&#x5927;&#x6D41;&#xFF0C;&#x53EF;&#x884C;&#x6D41;&#x51CF;&#x53BB;$t$&#x5230;$s$&#x7684;&#x6700;&#x5927;&#x6D41;&#x5373;&#x4E3A;&#x6700;&#x5C0F;&#x6D41;</p>
+
+        </div>
+    
+</div>
+
+        
+    </body>
+</html>
+

@@ -1,0 +1,80 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>生成树计数</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    
+        
+        <link rel="stylesheet" href="../gitbook/ebook.css">
+        
+    
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-katex/katex.min.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-ace/pdf.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/ebook.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+
+        
+    </head>
+    <body>
+        
+<div class="page">
+    
+        <h1 class="book-chapter book-chapter-3">生成树计数</h1>
+        <div class="section">
+            <h2 id="&#x751F;&#x6210;&#x6811;&#x8BA1;&#x6570;">&#x751F;&#x6210;&#x6811;&#x8BA1;&#x6570;</h2>
+<p>Kirchhoff&#x77E9;&#x9635;&#xFF1A;&#x5BF9;&#x4E8E;&#x65E0;&#x5411;&#x56FE;G&#xFF0C;&#x5B83;&#x7684;Kirchhoff&#x77E9;&#x9635;&#x4E3A;G&#x5BF9;&#x5E94;&#x7684;&#x5EA6;&#x6570;&#x77E9;&#x9635;&#x51CF;&#x53BB;&#x5B83;&#x7684;&#x90BB;&#x63A5;&#x77E9;&#x9635;</p>
+<p>Matrix-Tree&#x5B9A;&#x7406;&#xFF1A;&#x5BF9;&#x4E8E;&#x65E0;&#x5411;&#x56FE;G&#xFF0C;&#x5B83;&#x7684;&#x751F;&#x6210;&#x6811;&#x4E2A;&#x6570;&#x7B49;&#x4E8E;&#x5176;Kirchhoff&#x77E9;&#x9635;&#x4EFB;&#x4F55;&#x4E00;&#x4E2A;<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>n</mi><mo>&#x2212;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.64444em;"></span><span class="strut bottom" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="base textstyle uncramped"><span class="mord mathit">n</span><span class="mbin">&#x2212;</span><span class="mord mathrm">1</span></span></span></span>&#x9636;&#x4E3B;&#x5B50;&#x5F0F;&#x7684;&#x884C;&#x5217;&#x5F0F;&#x7684;&#x7EDD;&#x5BF9;&#x503C;</p>
+<pre><code class="lang-C++"><span class="hljs-function">LL <span class="hljs-title">det</span><span class="hljs-params">(LL A[N][N], <span class="hljs-keyword">int</span> n)</span> </span>{
+    <span class="hljs-keyword">int</span> t = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt;= n; i++) {
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> j = i+<span class="hljs-number">1</span>; j &lt;= n; j++) <span class="hljs-keyword">while</span>(A[j][i]) {
+            LL x = A[i][i]/A[j][i];
+            t++;
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> k = <span class="hljs-number">1</span>; k &lt;= n; k++)
+                A[i][k] = (A[i][k]-x*A[j][k]%MOD+MOD)%MOD;
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> k = <span class="hljs-number">1</span>; k &lt;= n; k++)
+                swap(A[i][k], A[j][k]);
+        }
+    }
+    LL ans = <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt;= n; i++) ans = (ans*A[i][i])%MOD;
+    <span class="hljs-keyword">if</span>(t&amp;<span class="hljs-number">1</span>) ans = -ans;
+    <span class="hljs-keyword">return</span> (ans%MOD+MOD)%MOD;
+}
+</code></pre>
+
+        </div>
+    
+</div>
+
+        
+    </body>
+</html>
+

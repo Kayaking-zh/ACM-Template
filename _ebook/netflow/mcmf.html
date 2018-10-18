@@ -1,0 +1,122 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>最小费用流</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    
+        
+        <link rel="stylesheet" href="../gitbook/ebook.css">
+        
+    
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-katex/katex.min.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-ace/pdf.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/ebook.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+
+        
+    </head>
+    <body>
+        
+<div class="page">
+    
+        <h1 class="book-chapter book-chapter-3">最小费用流</h1>
+        <div class="section">
+            <h2 id="&#x6700;&#x5C0F;&#x8D39;&#x7528;&#x6700;&#x5927;&#x6D41;">&#x6700;&#x5C0F;&#x8D39;&#x7528;&#x6700;&#x5927;&#x6D41;</h2>
+<pre><code class="lang-c++"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">addEdge</span><span class="hljs-params">(<span class="hljs-keyword">int</span> u, <span class="hljs-keyword">int</span> v, <span class="hljs-keyword">int</span> w, <span class="hljs-keyword">int</span> c)</span> </span>{
+    to[++tot] = v, nxt[tot] = head[u], cap[tot] = w, cost[tot] = c, head[u] = tot;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">spfaMin</span><span class="hljs-params">(<span class="hljs-keyword">int</span> &amp;c, <span class="hljs-keyword">int</span> &amp;f)</span> </span>{
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = src; i &lt;= sink; i++) d[i] = INT_INF, inq[i]=<span class="hljs-number">0</span>;
+    <span class="hljs-built_in">queue</span>&lt;<span class="hljs-keyword">int</span>&gt;q; q.push(src);
+    d[src] = <span class="hljs-number">0</span>, inq[src] = <span class="hljs-number">1</span>, pre[src] = <span class="hljs-number">0</span>, a[src] = INT_INF;
+    <span class="hljs-keyword">while</span>(!q.empty()) {
+        <span class="hljs-keyword">int</span> p = q.front(); q.pop();
+        inq[p] = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = head[p]; i; i = nxt[i]) {
+            <span class="hljs-keyword">int</span> l = to[i];
+            <span class="hljs-keyword">if</span>(cap[i] &amp;&amp; d[l] &gt; d[p] + cost[i]) {
+                d[l] = d[p] + cost[i]; pre[l] = i; a[l] = min(a[p], cap[i]);
+                <span class="hljs-keyword">if</span>(!inq[l]) q.push(l); inq[l] = <span class="hljs-number">1</span>;
+            }
+        }
+    }
+    <span class="hljs-keyword">if</span>(d[sink] == INT_INF) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    c += d[sink]*a[sink], f += a[sink];
+    <span class="hljs-keyword">int</span> u = sink;
+    <span class="hljs-keyword">while</span>(u != src) {
+        cap[pre[u]] -= a[sink], cap[pre[u]^<span class="hljs-number">1</span>] += a[sink];
+        u = to[pre[u]^<span class="hljs-number">1</span>];
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+}
+</code></pre>
+<h2 id="&#x6700;&#x5927;&#x8D39;&#x7528;&#x6700;&#x5927;&#x6D41;">&#x6700;&#x5927;&#x8D39;&#x7528;&#x6700;&#x5927;&#x6D41;</h2>
+<pre><code class="lang-c++"><span class="hljs-keyword">int</span> tot = <span class="hljs-number">1</span>, src, sink;
+<span class="hljs-keyword">int</span> to[M], nxt[M], cap[M], cost[M], head[N], d[N], a[N], inq[N], pre[N];
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">addEdge</span><span class="hljs-params">(<span class="hljs-keyword">int</span> u, <span class="hljs-keyword">int</span> v, <span class="hljs-keyword">int</span> w, <span class="hljs-keyword">int</span> c)</span> </span>{
+    to[++tot] = v, nxt[tot] = head[u], cap[tot] = w, cost[tot] = c, head[u] = tot;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">spfaMax</span><span class="hljs-params">(<span class="hljs-keyword">int</span> &amp;c, <span class="hljs-keyword">int</span> &amp;f)</span> </span>{
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = src; i &lt;= sink; i++) d[i] = -INT_INF, inq[i]=<span class="hljs-number">0</span>;
+    <span class="hljs-built_in">queue</span>&lt;<span class="hljs-keyword">int</span>&gt;q; q.push(src);
+    d[src] = <span class="hljs-number">0</span>, inq[src] = <span class="hljs-number">1</span>, pre[src] = <span class="hljs-number">0</span>, a[src] = INT_INF;
+    <span class="hljs-keyword">while</span>(!q.empty()) {
+        <span class="hljs-keyword">int</span> p = q.front(); q.pop();
+        inq[p] = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = head[p]; i; i = nxt[i]) {
+            <span class="hljs-keyword">int</span> l = to[i];
+            <span class="hljs-keyword">if</span>(cap[i] &amp;&amp; d[l] &lt; d[p] + cost[i]) {
+                d[l] = d[p] + cost[i]; pre[l] = i; a[l] = min(a[p], cap[i]);
+                <span class="hljs-keyword">if</span>(!inq[l]) q.push(l); inq[l] = <span class="hljs-number">1</span>;
+            }
+        }
+    }
+    <span class="hljs-keyword">if</span>(d[sink] == -INT_INF) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    c += d[sink]*a[sink], f += a[sink];
+    <span class="hljs-keyword">int</span> u = sink;
+    <span class="hljs-keyword">while</span>(u != src) {
+        cap[pre[u]] -= a[sink], cap[pre[u]^<span class="hljs-number">1</span>] += a[sink];
+        u = to[pre[u]^<span class="hljs-number">1</span>];
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+}
+</code></pre>
+
+        </div>
+    
+</div>
+
+        
+    </body>
+</html>
+
