@@ -5,5 +5,16 @@
         "include-codeblock",
         "ace",
         "emphasize"
-    ]
+    ],
+    "pluginsConfig" : {
+        "theme-default": {
+            "showLevel": true
+        }
+    },
+    "pdf": {
+        "pageNumbers": true
+    },
+    "styles": {
+        "pdf": "styles/pdf.css"
+    }
 }

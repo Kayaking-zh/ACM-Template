@@ -1,0 +1,109 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>最大流</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    
+        
+        <link rel="stylesheet" href="../gitbook/ebook.css">
+        
+    
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-katex/katex.min.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-ace/pdf.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/ebook.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+
+        
+    </head>
+    <body>
+        
+<div class="page">
+    
+        <h1 class="book-chapter book-chapter-3">最大流</h1>
+        <div class="section">
+            <h2 id="&#x6700;&#x5927;&#x6D41;">&#x6700;&#x5927;&#x6D41;</h2>
+<pre><code class="lang-c++"><span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> N = <span class="hljs-number">4100</span>, M = <span class="hljs-number">200010</span>;
+<span class="hljs-keyword">int</span> tot = <span class="hljs-number">1</span>, src, sink;
+<span class="hljs-keyword">int</span> to[M], _next[M], cap[M], head[N], pre[N], vis[N], cur[N], used[N];
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">addEdge</span><span class="hljs-params">(<span class="hljs-keyword">int</span> u, <span class="hljs-keyword">int</span> v, <span class="hljs-keyword">int</span> c)</span> </span>{
+    to[++tot] = v, _next[tot] = head[u], cap[tot] = c, head[u] = tot;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span> </span>{
+    tot = <span class="hljs-number">1</span>; <span class="hljs-built_in">memset</span>(head, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(head));
+}
+
+<span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">BFS</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-built_in">memset</span>(vis, <span class="hljs-literal">false</span>, <span class="hljs-keyword">sizeof</span>(vis));
+    <span class="hljs-built_in">queue</span>&lt;<span class="hljs-keyword">int</span>&gt;q; q.push(src);
+    vis[src] = <span class="hljs-literal">true</span>;
+    <span class="hljs-keyword">while</span>(!q.empty()) {
+        <span class="hljs-keyword">int</span> u = q.front(); q.pop();
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = head[u]; i; i = _next[i]) {
+            <span class="hljs-keyword">int</span> v = to[i];
+            <span class="hljs-keyword">if</span>(!cap[i] || vis[v]) <span class="hljs-keyword">continue</span> ;
+            vis[v] = <span class="hljs-literal">true</span>, pre[v] = pre[u]+<span class="hljs-number">1</span>;
+            q.push(v);
+        }
+    }
+    <span class="hljs-keyword">return</span> vis[sink];
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">DFS</span><span class="hljs-params">(<span class="hljs-keyword">int</span> u, <span class="hljs-keyword">int</span> c)</span> </span>{
+    <span class="hljs-keyword">if</span>(u==sink || c==<span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> c;
+    <span class="hljs-keyword">int</span> flow = <span class="hljs-number">0</span>, f;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> &amp;i = cur[u]; i; i = _next[i]) {
+        <span class="hljs-keyword">int</span> v = to[i];
+        <span class="hljs-keyword">if</span>(pre[v]==pre[u]+<span class="hljs-number">1</span> &amp;&amp; (f=DFS(v, min(c, cap[i])))&gt;<span class="hljs-number">0</span>) {
+            flow += f, c -= f, cap[i] -= f, cap[i^<span class="hljs-number">1</span>] += f;
+        }
+    }
+    <span class="hljs-keyword">return</span> flow;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">maxFlow</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">int</span> flow = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">while</span>(BFS()) {
+        <span class="hljs-built_in">memcpy</span>(cur, head, <span class="hljs-keyword">sizeof</span>(cur));
+        flow += DFS(src, INT_INF);
+    }
+    <span class="hljs-keyword">return</span> flow;
+}
+</code></pre>
+
+        </div>
+    
+</div>
+
+        
+    </body>
+</html>
+

@@ -1,0 +1,134 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>2-SAT</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    
+        
+        <link rel="stylesheet" href="../gitbook/ebook.css">
+        
+    
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-katex/katex.min.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-ace/pdf.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/ebook.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+
+        
+    </head>
+    <body>
+        
+<div class="page">
+    
+        <h1 class="book-chapter book-chapter-3">2-SAT</h1>
+        <div class="section">
+            <h2 id="2-sat">2-SAT</h2>
+<h3 id="&#x5B57;&#x5178;&#x5E8F;">&#x5B57;&#x5178;&#x5E8F;</h3>
+<p>&#x9010;&#x4E00;&#x8003;&#x8651;&#x6BCF;&#x4E2A;&#x6CA1;&#x6709;&#x8D4B;&#x503C;&#x7684;&#x53D8;&#x91CF;&#xFF0C;&#x5148;&#x5047;&#x5B9A;&#x4E3A;&#x771F;&#xFF0C;&#x7136;&#x540E;&#x6CBF;&#x6709;&#x5411;&#x8FB9;&#x6807;&#x8BB0;&#x6240;&#x6709;&#x80FD;&#x6807;&#x8BB0;&#x7684;&#x8282;&#x70B9;&#xFF0C;&#x5982;&#x679C;&#x8FC7;&#x7A0B;&#x4E2D;&#x53D1;&#x73B0;&#x67D0;&#x53D8;&#x91CF;&#x7684;&#x4E24;&#x4E2A;&#x5BF9;&#x7ACB;&#x8282;&#x70B9;&#x90FD;&#x88AB;&#x6807;&#x8BB0;&#xFF0C;&#x5219;&#x4E0D;&#x80FD;&#x4E3A;&#x771F;&#x3002;&#x7136;&#x540E;&#x5047;&#x5B9A;&#x4E3A;&#x5047;&#xFF0C;&#x518D;&#x6B21;&#x8FDB;&#x884C;&#x6807;&#x8BB0;&#xFF0C;&#x5982;&#x679C;&#x8FD8;&#x662F;&#x4E0D;&#x80FD;&#x6807;&#x8BB0;&#xFF0C;&#x5219;&#x65E0;&#x89E3;&#xFF0C;&#x4E0D;&#x9700;&#x8981;&#x56DE;&#x6EAF;&#x3002;</p>
+<pre><code class="lang-c++"><span class="hljs-comment">/* poi2001 &#x548C;&#x5E73;&#x59D4;&#x5458;&#x4F1A;
+&#x6839;&#x636E;&#x5BAA;&#x6CD5;&#xFF0C;Byteland &#x6C11;&#x4E3B;&#x5171;&#x548C;&#x56FD;&#x7684;&#x516C;&#x4F17;&#x548C;&#x5E73;&#x59D4;&#x5458;&#x4F1A;&#x5E94;&#x8BE5;&#x5728;&#x56FD;&#x4F1A;&#x4E2D;&#x901A;&#x8FC7;&#x7ACB;&#x6CD5;&#x7A0B;&#x5E8F;&#x6765;&#x521B;&#x7ACB;&#x3002;&#x4E0D;&#x5E78;&#x7684;&#x662F;&#xFF0C;&#x7531;&#x4E8E;&#x67D0;&#x4E9B;&#x515A;&#x6D3E;&#x4EE3;&#x8868;&#x4E4B;&#x95F4;&#x7684;&#x4E0D;&#x548C;&#x7766;&#x800C;&#x4F7F;&#x5F97;&#x8FD9;&#x4EF6;&#x4E8B;&#x5B58;&#x5728;&#x969C;&#x788D;&#x3002;
+
+&#x6B64;&#x59D4;&#x5458;&#x4F1A;&#x5FC5;&#x987B;&#x6EE1;&#x8DB3;&#x4E0B;&#x5217;&#x6761;&#x4EF6;&#xFF1A;
+&#x6BCF;&#x4E2A;&#x515A;&#x6D3E;&#x90FD;&#x5728;&#x59D4;&#x5458;&#x4F1A;&#x4E2D;&#x6070;&#x6709;1&#x4E2A;&#x4EE3;&#x8868;&#xFF0C;
+&#x5982;&#x679C;2&#x4E2A;&#x4EE3;&#x8868;&#x5F7C;&#x6B64;&#x538C;&#x6076;&#xFF0C;&#x5219;&#x4ED6;&#x4EEC;&#x4E0D;&#x80FD;&#x90FD;&#x5C5E;&#x4E8E;&#x59D4;&#x5458;&#x4F1A;&#x3002;
+
+&#x6BCF;&#x4E2A;&#x515A;&#x5728;&#x8BAE;&#x4F1A;&#x4E2D;&#x6709;2&#x4E2A;&#x4EE3;&#x8868;&#x3002;&#x4EE3;&#x8868;&#x4ECE;1&#x7F16;&#x53F7;&#x5230;2n&#x3002; &#x7F16;&#x53F7;&#x4E3A;2i&#x2212;1&#x548C;2i&#x7684;&#x4EE3;&#x8868;&#x5C5E;&#x4E8E;&#x7B2C;i&#x4E2A;&#x515A;&#x6D3E;&#x3002;
+*/</span>
+
+<span class="hljs-keyword">int</span> tot, c;
+<span class="hljs-keyword">int</span> to[M], nxt[M], head[N], mark[N], S[N];
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">addEdge</span><span class="hljs-params">(<span class="hljs-keyword">int</span> u, <span class="hljs-keyword">int</span> v)</span> </span>{
+    to[++tot] = v, nxt[tot] = head[u], head[u] = tot;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span> </span>{
+    tot = <span class="hljs-number">0</span>; <span class="hljs-built_in">memset</span>(mark, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(mark));
+    <span class="hljs-built_in">memset</span>(head, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(head));
+}
+
+<span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">dfs</span><span class="hljs-params">(<span class="hljs-keyword">int</span> u)</span> </span>{
+    <span class="hljs-keyword">if</span>(mark[u^<span class="hljs-number">1</span>]) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    <span class="hljs-keyword">if</span>(mark[u]) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+    mark[u] = <span class="hljs-literal">true</span>, S[c++] = u;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = head[u]; i; i = nxt[i]) <span class="hljs-keyword">if</span>(!dfs(to[i])) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">twoSAT</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n)</span> </span>{
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">2</span>*n; i += <span class="hljs-number">2</span>) <span class="hljs-keyword">if</span>(!mark[i] &amp;&amp; !mark[i^<span class="hljs-number">1</span>]) {
+        c = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">if</span>(!dfs(i)) {
+            <span class="hljs-keyword">while</span>(c &gt; <span class="hljs-number">0</span>) mark[S[--c]] = <span class="hljs-literal">false</span>;
+            <span class="hljs-keyword">if</span>(!dfs(i+<span class="hljs-number">1</span>)) {
+                <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;NIE\n&quot;</span>); <span class="hljs-keyword">return</span> ;
+            }
+        }
+    }
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">2</span>*n; i++) <span class="hljs-keyword">if</span>(mark[i]) <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d\n&quot;</span>, i+<span class="hljs-number">1</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">int</span> n, m;
+    <span class="hljs-keyword">while</span>(<span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%d%d&quot;</span>, &amp;n, &amp;m) != EOF) {
+        init();
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>, a, b; i &lt;= m; i++) {
+            <span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%d%d&quot;</span>, &amp;a, &amp;b);
+            a--, b--;
+            addEdge(a, b^<span class="hljs-number">1</span>); addEdge(b, a^<span class="hljs-number">1</span>);
+        }
+        twoSAT(n);
+    }
+}
+</code></pre>
+<h3 id="&#x5F3A;&#x8FDE;&#x901A;&#x5206;&#x91CF;">&#x5F3A;&#x8FDE;&#x901A;&#x5206;&#x91CF;</h3>
+<p>&#x5BF9;&#x4E8E;&#x6BCF;&#x4E2A;&#x6790;&#x53D6;&#x8303;&#x5F0F;<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>a</mi><mo>&#x22C1;</mo><mi>b</mi></mrow><annotation encoding="application/x-tex"> a \bigvee b </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1.00001em;vertical-align:-0.25001em;"></span><span class="base textstyle uncramped"><span class="mord mathit">a</span><span class="mop op-symbol small-op" style="top:-0.0000050000000000050004em;">&#x22C1;</span><span class="mord mathit">b</span></span></span></span> &#xFF0C;&#x8FDE;&#x4E24;&#x6761;&#x8FB9;<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>(</mo><mi mathvariant="normal">&#xAC;</mi><mi>a</mi><mo separator="true">,</mo><mi>b</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">(\neg a, b)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base textstyle uncramped"><span class="mopen">(</span><span class="mord mathrm">&#xAC;</span><span class="mord mathit">a</span><span class="mpunct">,</span><span class="mord mathit">b</span><span class="mclose">)</span></span></span></span>&#x548C;<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>(</mo><mi mathvariant="normal">&#xAC;</mi><mi>b</mi><mo separator="true">,</mo><mi>a</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">(\neg b, a)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base textstyle uncramped"><span class="mopen">(</span><span class="mord mathrm">&#xAC;</span><span class="mord mathit">b</span><span class="mpunct">,</span><span class="mord mathit">a</span><span class="mclose">)</span></span></span></span>&#xFF0C;&#x7136;&#x540E;&#x6C42;&#x5F3A;&#x8FDE;&#x901A;&#x5206;&#x91CF;&#xFF0C;&#x8FDB;&#x884C;&#x7F29;&#x70B9;</p>
+<p>&#x5982;&#x679C;&#x5B58;&#x5728;&#x4E24;&#x4E2A;&#x5BF9;&#x7ACB;&#x7684;&#x53D8;&#x91CF;&#x5728;&#x4E00;&#x4E2A;&#x5F3A;&#x8FDE;&#x901A;&#x5206;&#x91CF;&#x91CC;&#x9762;&#xFF0C;&#x5219;&#x65E0;&#x89E3;&#xFF0C;&#x5426;&#x5219;&#x5FC5;&#x6709;&#x89E3;</p>
+<p>&#x7F29;&#x70B9;&#x4E4B;&#x540E;&#x7684;DAG&#x91CC;&#x9762;&#xFF0C;&#x5BF9;&#x4E8E;&#x4E24;&#x4E2A;&#x5BF9;&#x7ACB;&#x53D8;&#x91CF;<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>a</mi></mrow><annotation encoding="application/x-tex">a</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit">a</span></span></span></span>&#x548C;<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>b</mi></mrow><annotation encoding="application/x-tex">b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit">b</span></span></span></span>&#xFF0C;&#x82E5;<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>a</mi></mrow><annotation encoding="application/x-tex">a</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit">a</span></span></span></span>&#x7684;&#x62D3;&#x6251;&#x5E8F;&#x5728;&#x540E;&#x8FB9;&#xFF0C;&#x5219;<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>a</mi></mrow><annotation encoding="application/x-tex">a</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit">a</span></span></span></span>&#x4E3A;&#x771F;</p>
+<pre><code class="lang-C++"><span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">twoSAT</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n)</span> </span>{
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt;= <span class="hljs-number">2</span>*n; i++) <span class="hljs-keyword">if</span>(!dfn[i]) tarjan(i);
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt;= n; i++) <span class="hljs-keyword">if</span>(sccno[i] == sccno[i+n]) {
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;NO\n&quot;</span>); <span class="hljs-keyword">return</span> ;
+    };
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;YES\n&quot;</span>);
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt;= n; i++) {
+        <span class="hljs-keyword">if</span>(sccno[i] &lt; sccno[i+n]) <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;true\n&quot;</span>);
+        <span class="hljs-keyword">else</span> <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;false\n&quot;</span>);
+    }
+}
+</code></pre>
+
+        </div>
+    
+</div>
+
+        
+    </body>
+</html>
+

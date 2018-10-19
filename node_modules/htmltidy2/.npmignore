@@ -1,0 +1,6 @@
+.c9*
+.settings
+node_modules
+
+#The IDE folder
+.idea

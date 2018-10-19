@@ -1,0 +1,168 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>双联通分量</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    
+        
+        <link rel="stylesheet" href="../gitbook/ebook.css">
+        
+    
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-katex/katex.min.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-ace/pdf.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/ebook.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+
+        
+    </head>
+    <body>
+        
+<div class="page">
+    
+        <h1 class="book-chapter book-chapter-3">双联通分量</h1>
+        <div class="section">
+            <h3 id="&#x5272;&#x70B9;">&#x5272;&#x70B9;</h3>
+<ol>
+<li>&#x6811;&#x6839;&#x662F;&#x5272;&#x70B9;&#x5F53;&#x4E14;&#x4EC5;&#x5F53;&#x5B83;&#x6709;&#x4E24;&#x4E2A;&#x53CA;&#x4EE5;&#x4E0A;&#x7684;&#x5B69;&#x5B50;</li>
+<li>&#x975E;&#x6839;&#x8282;&#x70B9;<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>u</mi></mrow><annotation encoding="application/x-tex"> u </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit">u</span></span></span></span>&#x662F;&#x5272;&#x70B9;&#x5F53;&#x4E14;&#x4EC5;&#x5F53;<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>u</mi></mrow><annotation encoding="application/x-tex">u</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit">u</span></span></span></span>&#x5B58;&#x5728;&#x4E00;&#x4E2A;&#x5B50;&#x8282;&#x70B9;<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>v</mi></mrow><annotation encoding="application/x-tex">v</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.03588em;">v</span></span></span></span>&#xFF0C;<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>v</mi></mrow><annotation encoding="application/x-tex">v</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.03588em;">v</span></span></span></span>&#x4EE5;&#x53CA;&#x5176;&#x5B50;&#x8282;&#x70B9;&#x90FD;&#x6CA1;&#x6709;&#x53CD;&#x5411;&#x8FB9;&#x8FDE;&#x5411;<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>u</mi></mrow><annotation encoding="application/x-tex">u</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit">u</span></span></span></span>&#x7684;&#x5B50;&#x8282;&#x70B9;</li>
+</ol>
+<pre><code class="lang-c++"><span class="hljs-keyword">int</span> tot, dfs_clock, bcc_cnt;
+<span class="hljs-keyword">int</span> to[M], nxt[M], head[N], dfn[N], low[N], iscut[N], bccno[N];
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span> </span>{
+    tot = dfs_clock = bcc_cnt = <span class="hljs-number">0</span>; <span class="hljs-built_in">memset</span>(head, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(head));
+    <span class="hljs-built_in">memset</span>(dfn, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(dfn)); <span class="hljs-built_in">memset</span>(iscut, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(iscut));
+    <span class="hljs-built_in">memset</span>(bccno, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(bccno));
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">addEdge</span><span class="hljs-params">(<span class="hljs-keyword">int</span> u, <span class="hljs-keyword">int</span> v)</span> </span>{
+    to[++tot] = v, nxt[tot] = head[u], head[u] = tot;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">dfs</span><span class="hljs-params">(<span class="hljs-keyword">int</span> u, <span class="hljs-keyword">int</span> fa = <span class="hljs-number">-1</span>)</span> </span>{
+    dfn[u] = low[u] = ++dfs_clock;
+    <span class="hljs-keyword">int</span> child = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = head[u]; i; i = nxt[i]) {
+        <span class="hljs-keyword">int</span> v = to[i];
+        <span class="hljs-keyword">if</span>(!dfn[v]) {
+            child++;
+            dfs(v, u);
+            low[u] = min(low[u], low[v]);
+            <span class="hljs-keyword">if</span>(low[v] &gt;= dfn[u]) iscut[u] = <span class="hljs-literal">true</span>;
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(dfn[v] &lt; dfn[u] &amp;&amp; v != fa)
+            low[u] = min(low[u], dfn[v]);
+    }
+    <span class="hljs-keyword">if</span>(fa &lt; <span class="hljs-number">0</span> &amp;&amp; child == <span class="hljs-number">1</span>) iscut[u] = <span class="hljs-number">0</span>;
+}
+</code></pre>
+<h3 id="&#x70B9;-&#x53CC;&#x8054;&#x901A;&#x5206;&#x91CF;">&#x70B9;-&#x53CC;&#x8054;&#x901A;&#x5206;&#x91CF;</h3>
+<p>&#x4E0D;&#x540C;&#x53CC;&#x8054;&#x901A;&#x5206;&#x91CF;&#x4E4B;&#x95F4;&#x6700;&#x591A;&#x53EA;&#x6709;&#x4E00;&#x4E2A;&#x516C;&#x5171;&#x70B9;&#xFF0C;&#x4E14;&#x4E00;&#x5B9A;&#x662F;&#x5272;&#x70B9;&#x3002;&#x8BA1;&#x7B97;&#x70B9;&#x53CC;&#x8054;&#x901A;&#x5206;&#x91CF;&#x7684;&#x8FC7;&#x7A0B;&#x548C;&#x8BA1;&#x7B97;&#x5272;&#x70B9;&#x7C7B;&#x4F3C;&#xFF0C;&#x7528;&#x4E00;&#x4E2A;&#x6808;&#x6765;&#x4FDD;&#x5B58;&#x5728;&#x5F53;&#x524D;BCC&#x4E2D;&#x7684;&#x8FB9;&#x3002;</p>
+<pre><code class="lang-c++"><span class="hljs-keyword">int</span> tot, dfs_clock, bcc_cnt;
+<span class="hljs-keyword">int</span> to[M], nxt[M], head[N], dfn[N], low[N], iscut[N], bccno[N];
+<span class="hljs-built_in">stack</span>&lt;pair&lt;<span class="hljs-keyword">int</span>, <span class="hljs-keyword">int</span>&gt; &gt;stk;
+<span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt;bcc[N];
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span> </span>{
+    tot = dfs_clock = bcc_cnt = <span class="hljs-number">0</span>; <span class="hljs-built_in">memset</span>(head, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(head));
+    <span class="hljs-built_in">memset</span>(dfn, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(dfn)); <span class="hljs-built_in">memset</span>(iscut, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(iscut));
+    <span class="hljs-built_in">memset</span>(bccno, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(bccno));
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">addEdge</span><span class="hljs-params">(<span class="hljs-keyword">int</span> u, <span class="hljs-keyword">int</span> v)</span> </span>{
+    to[++tot] = v, nxt[tot] = head[u], head[u] = tot;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">dfs</span><span class="hljs-params">(<span class="hljs-keyword">int</span> u, <span class="hljs-keyword">int</span> fa = <span class="hljs-number">-1</span>)</span> </span>{
+    dfn[u] = low[u] = ++dfs_clock;
+    <span class="hljs-keyword">int</span> child = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = head[u]; i; i = nxt[i]) {
+        <span class="hljs-keyword">int</span> v = to[i];
+        <span class="hljs-keyword">if</span>(!dfn[v]) {
+            stk.push(make_pair(u, v)), child++;
+            dfs(v, u);
+            low[u] = min(low[u], low[v]);
+            <span class="hljs-keyword">if</span>(low[v] &gt;= dfn[u]) {
+                iscut[u] = <span class="hljs-literal">true</span>; bcc_cnt++;
+                bcc[bcc_cnt].clear();
+                <span class="hljs-keyword">for</span>(; ; ) {
+                    <span class="hljs-keyword">int</span> a = stk.top().first, b = stk.top().second; stk.pop();
+                    <span class="hljs-keyword">if</span>(bccno[a] != bcc_cnt) {
+                        bcc[bcc_cnt].push_back(a); bccno[a] = bcc_cnt;
+                    }
+                    <span class="hljs-keyword">if</span>(bccno[b] != bcc_cnt) {
+                        bcc[bcc_cnt].push_back(b); bccno[b] = bcc_cnt;
+                    }
+                    <span class="hljs-keyword">if</span>(a == u &amp;&amp; b == v) <span class="hljs-keyword">break</span> ;
+                }
+            }
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(dfn[v] &lt; dfn[u] &amp;&amp; v != fa) {
+            stk.push(make_pair(u, v));
+            low[u] = min(low[u], dfn[v]);
+        }
+    }
+    <span class="hljs-keyword">if</span>(fa &lt; <span class="hljs-number">0</span> &amp;&amp; child == <span class="hljs-number">1</span>) iscut[u] = <span class="hljs-number">0</span>;
+}
+</code></pre>
+<h3 id="&#x5272;&#x8FB9;">&#x5272;&#x8FB9;</h3>
+<p>&#x5BF9;&#x4E8E;&#x4E00;&#x6761;&#x8FB9;<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>(</mo><mi>u</mi><mo separator="true">,</mo><mi>v</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">(u, v)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base textstyle uncramped"><span class="mopen">(</span><span class="mord mathit">u</span><span class="mpunct">,</span><span class="mord mathit" style="margin-right:0.03588em;">v</span><span class="mclose">)</span></span></span></span>&#xFF0C;&#x82E5;<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>v</mi></mrow><annotation encoding="application/x-tex">v</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.03588em;">v</span></span></span></span>&#x53CA;&#x5176;&#x540E;&#x4EE3;&#x90FD;&#x4E0D;&#x80FD;&#x5230;&#x8FBE;<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>u</mi></mrow><annotation encoding="application/x-tex">u</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit">u</span></span></span></span>&#x53CA;&#x5176;&#x7956;&#x5148;&#xFF0C;&#x5219;<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>(</mo><mi>u</mi><mo separator="true">,</mo><mi>v</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">(u, v)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base textstyle uncramped"><span class="mopen">(</span><span class="mord mathit">u</span><span class="mpunct">,</span><span class="mord mathit" style="margin-right:0.03588em;">v</span><span class="mclose">)</span></span></span></span>&#x662F;&#x5272;&#x8FB9;</p>
+<pre><code class="lang-c++"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">addEdge</span><span class="hljs-params">(<span class="hljs-keyword">int</span> u, <span class="hljs-keyword">int</span> v, <span class="hljs-keyword">int</span> id)</span> </span>{
+    to[++tot] = v, nxt[tot] = head[u], index[tot] = id, head[u] = tot;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">dfs</span><span class="hljs-params">(<span class="hljs-keyword">int</span> u, <span class="hljs-keyword">int</span> from = <span class="hljs-number">0</span>)</span> </span>{
+    dfn[u] = low[u] = ++dfs_clock;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = head[u]; i; i = nxt[i]) <span class="hljs-keyword">if</span>(index[i] != from){
+        <span class="hljs-keyword">int</span> v = to[i];
+        <span class="hljs-keyword">if</span>(!dfn[v]) {
+            dfs(v, index[i]);
+            low[u] = min(low[u], low[v]);
+            <span class="hljs-keyword">if</span>(low[v] &gt; dfn[u]) iscut[index[i]] = <span class="hljs-literal">true</span>;
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(dfn[v] &lt; dfn[u])
+            low[u] = min(low[u], dfn[v]);
+    }
+}
+</code></pre>
+<h3 id="&#x8FB9;-&#x53CC;&#x8054;&#x901A;&#x5206;&#x91CF;">&#x8FB9;-&#x53CC;&#x8054;&#x901A;&#x5206;&#x91CF;</h3>
+<p>&#x6C42;&#x51FA;&#x5272;&#x8FB9;&#x4E4B;&#x540E;&#xFF0C;&#x5728;&#x539F;&#x56FE;&#x4E2D;dfs&#xFF0C;&#x6BCF;&#x4E2A;&#x8054;&#x901A;&#x5757;&#x4E3A;&#x4E00;&#x4E2A;&#x8FB9;-&#x53CC;&#x8054;&#x901A;&#x5206;&#x91CF;</p>
+<pre><code class="lang-c++"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">getIdx</span><span class="hljs-params">(<span class="hljs-keyword">int</span> u, <span class="hljs-keyword">int</span> id)</span> </span>{
+    bccno[u] = id;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = head[u]; i; i = nxt[i])
+        <span class="hljs-keyword">if</span>(!iscut[index[i]] &amp;&amp; !bccno[to[i]]) getIdx(to[i], id);
+}
+</code></pre>
+
+        </div>
+    
+</div>
+
+        
+    </body>
+</html>
+

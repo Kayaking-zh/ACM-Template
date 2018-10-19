@@ -1,0 +1,88 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>强连通分量</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    
+        
+        <link rel="stylesheet" href="../gitbook/ebook.css">
+        
+    
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-katex/katex.min.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-ace/pdf.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/ebook.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+
+        
+    </head>
+    <body>
+        
+<div class="page">
+    
+        <h1 class="book-chapter book-chapter-3">强连通分量</h1>
+        <div class="section">
+            <h2 id="&#x5F3A;&#x8FDE;&#x901A;&#x5206;&#x91CF;">&#x5F3A;&#x8FDE;&#x901A;&#x5206;&#x91CF;</h2>
+<pre><code class="lang-c++"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span> </span>{
+    tot = dfs_clock = scc_cnt = <span class="hljs-number">0</span>;
+    <span class="hljs-built_in">memset</span>(head, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(head)); <span class="hljs-built_in">memset</span>(dfn, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(dfn));
+    <span class="hljs-built_in">memset</span>(sccno, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(sccno));
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">addEdge</span><span class="hljs-params">(<span class="hljs-keyword">int</span> u, <span class="hljs-keyword">int</span> v)</span> </span>{
+    to[++tot] = v, nxt[tot] = head[u], head[u] = tot;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">tarjan</span><span class="hljs-params">(<span class="hljs-keyword">int</span> u)</span> </span>{
+    dfn[u] = low[u] = ++dfs_clock;
+    S.push(u);
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = head[u]; i; i = nxt[i]) {
+        <span class="hljs-keyword">int</span> v = to[i];
+        <span class="hljs-keyword">if</span>(!dfn[v]) tarjan(v), low[u] = min(low[u], low[v]);
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(!sccno[v]) low[u] = min(low[u], dfn[v]);
+    }
+    <span class="hljs-keyword">if</span>(low[u] == dfn[u]) {
+        scc_cnt++;
+        <span class="hljs-keyword">for</span>(; ; ) {
+            <span class="hljs-keyword">int</span> x = S.top(); S.pop();
+            sccno[x] = scc_cnt;
+            <span class="hljs-keyword">if</span>(x == u) <span class="hljs-keyword">break</span> ;
+        }
+    }
+}
+</code></pre>
+
+        </div>
+    
+</div>
+
+        
+    </body>
+</html>
+
