@@ -1,20 +1,8 @@
 {
-    "title" : "ACM-Template",
-    "plugins" : [
-        "katex",
-        "include-codeblock",
-        "ace",
-        "emphasize"
-    ],
-    "pluginsConfig" : {
-        "theme-default": {
-            "showLevel": true
-        }
-    },
-    "pdf": {
-        "pageNumbers": true
-    },
-    "styles": {
-        "pdf": "styles/pdf.css"
-    }
+  "gitbook": ">=3.1.0",
+  "plugins": [
+    "include-codeblock",
+    "katex"
+  ],
+  "pluginsConfig": {}
 }
