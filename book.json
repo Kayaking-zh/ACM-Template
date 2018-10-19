@@ -1,7 +1,8 @@
 {
   "gitbook": ">=3.1.0",
   "plugins": [
-    "include-codeblock",
+  	"include-codeblock",
+  	"ace",
     "katex"
   ],
   "pluginsConfig": {}
